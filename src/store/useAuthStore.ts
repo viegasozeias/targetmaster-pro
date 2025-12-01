@@ -83,7 +83,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         // but for now, let's just rely on a simple check or just let it run but handle errors gracefully.
         // Actually, let's add a simple guard.
         // @ts-ignore - adding a temp property to the store instance to track in-flight requests
-        if (isFetchingProfile) { // Use the new flag
+        if (get().isFetchingProfile) { // Use the new flag
             console.log('Auth: profile fetch already in progress, skipping')
             return
         }

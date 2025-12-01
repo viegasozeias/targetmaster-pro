@@ -193,6 +193,8 @@ export const translations = {
             commonIssue: "Common Issue",
             units: "units",
             progressionTitle: "Grouping Size Progression",
+            lowerIsBetter: "Lower is better (More precise)",
+            goal: "Goal",
             diagnosisTitle: "Common Diagnoses",
             recentHistory: "Recent History",
             noAnalyses: "No analyses recorded yet. Start shooting!",

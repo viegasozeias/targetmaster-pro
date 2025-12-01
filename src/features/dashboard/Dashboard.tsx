@@ -38,13 +38,13 @@ export function Dashboard() {
         const counts: Record<string, number> = {}
 
         // Keywords for categorization (same as DiagnosisChart)
-        const categories = {
-            "Gatilho": ["gatilho", "trigger", "jerking", "dedo"],
-            "Empunhadura": ["empunhadura", "grip", "tightening", "apertando", "mão"],
-            "Visada": ["visada", "sight", "foco", "olho", "eye", "mira"],
-            "Respiração": ["respiração", "breathing", "ar"],
-            "Antecipação": ["antecipação", "anticipating", "pushing", "heeling", "empurrando"],
-            "Postura": ["postura", "stance", "corpo"],
+        const categories: Record<string, string[]> = {
+            "trigger": ["gatilho", "trigger", "jerking", "dedo"],
+            "grip": ["empunhadura", "grip", "tightening", "apertando", "mão"],
+            "sight": ["visada", "sight", "foco", "olho", "eye", "mira"],
+            "breathing": ["respiração", "breathing", "ar"],
+            "anticipation": ["antecipação", "anticipating", "pushing", "heeling", "empurrando"],
+            "stance": ["postura", "stance", "corpo"],
         }
 
         history.forEach(h => {
@@ -56,21 +56,25 @@ export function Dashboard() {
                 label = (h.diagnosis.diagnosis || h.diagnosis.title || h.diagnosis.mainIssue || h.diagnosis.grouping || "").toLowerCase()
             }
 
-            let category = "Outros"
-            for (const [cat, keywords] of Object.entries(categories)) {
+            let categoryKey = "other"
+            for (const [key, keywords] of Object.entries(categories)) {
                 if (keywords.some(k => label.includes(k))) {
-                    category = cat
+                    categoryKey = key
                     break
                 }
             }
-            counts[category] = (counts[category] || 0) + 1
+            counts[categoryKey] = (counts[categoryKey] || 0) + 1
         })
-        const mostFrequent = Object.entries(counts)
-            .filter(([name]) => name !== "Outros")
-            .sort((a, b) => b[1] - a[1])[0]?.[0] || "N/A"
+
+        const mostFrequentKey = Object.entries(counts)
+            .filter(([key]) => key !== "other")
+            .sort((a, b) => b[1] - a[1])[0]?.[0]
+
+        // @ts-ignore
+        const mostFrequent = mostFrequentKey ? t.categories[mostFrequentKey] : "N/A"
 
         return { total, avgGrouping, bestGrouping, mostFrequent }
-    }, [history])
+    }, [history, t.categories])
 
     if (isLoadingHistory) {
         return (

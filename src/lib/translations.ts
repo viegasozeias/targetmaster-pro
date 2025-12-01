@@ -124,6 +124,15 @@ export const translations = {
             grouping: "Agrupamento",
             count: "Contagem",
             diagnosis: "Diagnóstico",
+            categories: {
+                trigger: "Gatilho",
+                grip: "Empunhadura",
+                sight: "Visada",
+                breathing: "Respiração",
+                anticipation: "Antecipação",
+                stance: "Postura",
+                other: "Outros"
+            }
         },
         drills: {
             title: "Treinos",
@@ -202,6 +211,15 @@ export const translations = {
             grouping: "Grouping",
             count: "Count",
             diagnosis: "Diagnosis",
+            categories: {
+                trigger: "Trigger Control",
+                grip: "Grip",
+                sight: "Sight Alignment",
+                breathing: "Breathing",
+                anticipation: "Anticipation",
+                stance: "Stance",
+                other: "Other"
+            }
         },
         drills: {
             title: "Training Drills",

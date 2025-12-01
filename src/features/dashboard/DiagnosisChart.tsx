@@ -26,13 +26,13 @@ export function DiagnosisChart({ history }: DiagnosisChartProps) {
         const counts: Record<string, number> = {}
 
         // Keywords for categorization (simple heuristic)
-        const categories = {
-            "Gatilho": ["gatilho", "trigger", "jerking", "dedo"],
-            "Empunhadura": ["empunhadura", "grip", "tightening", "apertando", "mão"],
-            "Visada": ["visada", "sight", "foco", "olho", "eye", "mira"],
-            "Respiração": ["respiração", "breathing", "ar"],
-            "Antecipação": ["antecipação", "anticipating", "pushing", "heeling", "empurrando"],
-            "Postura": ["postura", "stance", "corpo"],
+        const categories: Record<string, string[]> = {
+            "trigger": ["gatilho", "trigger", "jerking", "dedo"],
+            "grip": ["empunhadura", "grip", "tightening", "apertando", "mão"],
+            "sight": ["visada", "sight", "foco", "olho", "eye", "mira"],
+            "breathing": ["respiração", "breathing", "ar"],
+            "anticipation": ["antecipação", "anticipating", "pushing", "heeling", "empurrando"],
+            "stance": ["postura", "stance", "corpo"],
         }
 
         history.forEach((item) => {
@@ -45,24 +45,28 @@ export function DiagnosisChart({ history }: DiagnosisChartProps) {
                 diagnosisText = (item.diagnosis.diagnosis || item.diagnosis.title || item.diagnosis.mainIssue || item.diagnosis.grouping || "").toLowerCase()
             }
 
-            let category = "Outros"
+            let categoryKey = "other"
 
             // Check for keywords
-            for (const [cat, keywords] of Object.entries(categories)) {
+            for (const [key, keywords] of Object.entries(categories)) {
                 if (keywords.some(k => diagnosisText.includes(k))) {
-                    category = cat
+                    categoryKey = key
                     break
                 }
             }
 
-            counts[category] = (counts[category] || 0) + 1
+            counts[categoryKey] = (counts[categoryKey] || 0) + 1
         })
 
         return Object.entries(counts)
-            .map(([name, value]) => ({ name, value }))
-            .filter(item => item.name !== "Outros")
+            .map(([key, value]) => ({
+                // @ts-ignore
+                name: t.categories[key] || t.categories.other,
+                value
+            }))
+            .filter(item => item.name !== t.categories.other)
             .sort((a, b) => b.value - a.value)
-    }, [history])
+    }, [history, t.categories])
 
     if (history.length === 0) {
         return null

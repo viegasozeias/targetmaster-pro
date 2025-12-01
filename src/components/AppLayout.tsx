@@ -1,6 +1,6 @@
 
 import { Link, useLocation } from "react-router-dom"
-import { LayoutDashboard, Target, Clock, User, LogOut, Menu, Box, X, ShieldCheck } from "lucide-react"
+import { LayoutDashboard, Target, Clock, User, LogOut, Menu, Box, X, ShieldCheck, Settings } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useAuthStore } from "@/store/useAuthStore"
 import { useState } from "react"
@@ -63,7 +63,14 @@ export function AppLayout({ children }: AppLayoutProps) {
 
                 <div className="p-4 border-t space-y-2">
                     <div className="px-2">
-                        <SettingsDialog />
+                        <SettingsDialog
+                            trigger={
+                                <Button variant="ghost" className="w-full justify-start gap-3">
+                                    <Settings className="h-4 w-4" />
+                                    {translations[language].settings.title}
+                                </Button>
+                            }
+                        />
                     </div>
                     <Button
                         variant="ghost"
@@ -110,7 +117,14 @@ export function AppLayout({ children }: AppLayoutProps) {
                         })}
                         <div className="border-t my-2 pt-2 space-y-2">
                             <div className="px-2">
-                                <SettingsDialog />
+                                <SettingsDialog
+                                    trigger={
+                                        <Button variant="ghost" className="w-full justify-start gap-3">
+                                            <Settings className="h-4 w-4" />
+                                            {translations[language].settings.title}
+                                        </Button>
+                                    }
+                                />
                             </div>
                             <Button
                                 variant="ghost"

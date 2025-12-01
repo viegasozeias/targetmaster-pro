@@ -22,7 +22,11 @@ import { useLanguageStore } from "@/store/useLanguageStore"
 
 import { translations } from "@/lib/translations"
 
-export function SettingsDialog() {
+interface SettingsDialogProps {
+    trigger?: React.ReactNode
+}
+
+export function SettingsDialog({ trigger }: SettingsDialogProps) {
     const { language, setLanguage } = useLanguageStore()
     const t = translations[language]
     const [open, setOpen] = useState(false)
@@ -34,9 +38,11 @@ export function SettingsDialog() {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button variant="ghost" size="icon">
-                    <Settings className="h-5 w-5" />
-                </Button>
+                {trigger || (
+                    <Button variant="ghost" size="icon">
+                        <Settings className="h-5 w-5" />
+                    </Button>
+                )}
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>

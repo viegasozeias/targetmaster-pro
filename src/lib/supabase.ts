@@ -1,5 +1,11 @@
 import { createClient } from '@supabase/supabase-js'
 
+declare global {
+    interface Window {
+        env: any
+    }
+}
+
 const getEnv = (key: string) => {
     // @ts-ignore
     return window.env?.[key] || import.meta.env[key]

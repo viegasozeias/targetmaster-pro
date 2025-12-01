@@ -19,6 +19,7 @@ interface AuthState {
     isLoading: boolean
     isAdmin: boolean
     initialized: boolean
+    isFetchingProfile?: boolean // Add this optional property
     initialize: () => Promise<void>
     refreshProfile: () => Promise<void>
     signOut: () => Promise<void>
@@ -30,6 +31,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     isLoading: true,
     isAdmin: false,
     initialized: false,
+    isFetchingProfile: false, // Initialize it
     initialize: async () => {
         if (get().initialized) return
         console.log('Auth: initializing...')
@@ -73,7 +75,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         }
     },
     refreshProfile: async () => {
-        const { user, isLoading } = get()
+        const { user } = get() // Removed unused isLoading
         if (!user) return
 
         // Prevent redundant fetches if already loading (and we have a user)

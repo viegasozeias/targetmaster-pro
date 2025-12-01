@@ -33,7 +33,7 @@ export function DiagnosisChart({ history }: DiagnosisChartProps) {
             "breathing": ["respiração", "breathing", "ar"],
             "anticipation": ["antecipação", "anticipating", "pushing", "heeling", "empurrando", "recuo"],
             "stance": ["postura", "stance", "corpo", "estabilidade"],
-            "good": ["bom", "good", "excelente", "ótimo", "center", "centro", "preciso"],
+            "center_hit": ["center", "centro", "preciso"],
         }
 
         history.forEach((item) => {

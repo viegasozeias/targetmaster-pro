@@ -60,7 +60,7 @@ export const useAuthStore = create<AuthState>()(
                     }
                     set({ initialized: true })
 
-                    supabase.auth.onAuthStateChange(async (event, session) => {
+                    supabase.auth.onAuthStateChange(async (_event, session) => {
                         set({ user: session?.user ?? null })
                         if (session?.user) {
                             await get().refreshProfile()

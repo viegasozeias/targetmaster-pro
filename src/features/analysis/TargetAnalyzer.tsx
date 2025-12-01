@@ -62,7 +62,23 @@ export function TargetAnalyzer() {
                     <CardTitle>{t.uploadTitle}</CardTitle>
                     <CardDescription>{t.uploadDesc}</CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="space-y-6">
+                    {/* Instructions Steps */}
+                    <div className="grid grid-cols-3 gap-4 text-center">
+                        <div className="flex flex-col items-center space-y-2">
+                            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">1</div>
+                            <span className="text-xs text-muted-foreground">{t.step1}</span>
+                        </div>
+                        <div className="flex flex-col items-center space-y-2">
+                            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">2</div>
+                            <span className="text-xs text-muted-foreground">{t.step2}</span>
+                        </div>
+                        <div className="flex flex-col items-center space-y-2">
+                            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">3</div>
+                            <span className="text-xs text-muted-foreground">{t.step3}</span>
+                        </div>
+                    </div>
+
                     <div
                         className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-12 flex flex-col items-center justify-center text-center hover:bg-accent/50 transition-colors cursor-pointer"
                         onDrop={handleDrop}

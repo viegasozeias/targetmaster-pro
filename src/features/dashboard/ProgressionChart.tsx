@@ -113,6 +113,9 @@ export function ProgressionChart({ history }: ProgressionChartProps) {
                             />
                         </LineChart>
                     </ResponsiveContainer>
+                    <div className="text-center mt-2">
+                        <p className="text-xs text-muted-foreground">{t.lowerIsBetter}</p>
+                    </div>
                 </div>
             </CardContent>
         </Card>

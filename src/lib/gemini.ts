@@ -55,7 +55,8 @@ export async function generateAIAnalysis(
     imageBase64: string,
     shots: Shot[],
     profile: any,
-    language: 'pt' | 'en'
+    language: 'pt' | 'en',
+    center?: { x: number; y: number } | null
 ): Promise<any> {
     const genAI = new GoogleGenerativeAI(apiKey)
     const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" })
@@ -71,6 +72,9 @@ export async function generateAIAnalysis(
     - Vision Issues: ${profile.visionIssues || "None"}
     - Medications: ${profile.medications || "None"}
     - Physical Limitations: ${profile.physicalLimitations || "None"}
+
+    Target Center (0-100% coordinates):
+    ${center ? JSON.stringify(center) : "Assuming center is at 50, 50"}
 
     Shot Data (0-100% coordinates from top-left):
     ${JSON.stringify(shots)}

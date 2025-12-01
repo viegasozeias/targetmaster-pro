@@ -57,7 +57,7 @@ export function AnalysisReport() {
                 setLoading(true)
                 setError(null)
                 try {
-                    const report = await generateAIAnalysis(systemApiKey, image, shots, diagnosisData, language)
+                    const report = await generateAIAnalysis(systemApiKey, image, shots, diagnosisData, language, center)
                     setAiReport(report)
 
                     // Auto-save to history

@@ -39,7 +39,6 @@ export const useAuthStore = create<AuthState>()(
             lastFetchTime: 0, // Initialize
             initialize: async () => {
                 if (get().initialized) return
-                console.log('Auth: initializing...')
                 try {
                     // Create a timeout promise
                     const timeout = new Promise((_, reject) =>
@@ -52,20 +51,16 @@ export const useAuthStore = create<AuthState>()(
                         timeout
                     ]) as any
 
-                    console.log('Auth: session found?', !!session)
                     set({ user: session?.user ?? null })
 
                     if (session?.user) {
-                        console.log('Auth: refreshing profile...')
                         await get().refreshProfile()
                     } else {
-                        console.log('Auth: no user, loading false')
                         set({ isLoading: false })
                     }
                     set({ initialized: true })
 
                     supabase.auth.onAuthStateChange(async (event, session) => {
-                        console.log('Auth: state change', event)
                         set({ user: session?.user ?? null })
                         if (session?.user) {
                             await get().refreshProfile()
@@ -74,7 +69,6 @@ export const useAuthStore = create<AuthState>()(
                         }
                     })
                 } catch (error) {
-                    console.error('Error initializing auth:', error)
                     // Force loading false on error/timeout to unblock UI
                     set({ isLoading: false })
                 }
@@ -87,13 +81,11 @@ export const useAuthStore = create<AuthState>()(
                 const now = Date.now()
                 const lastFetch = get().lastFetchTime || 0
                 if (now - lastFetch < 5000) {
-                    console.log('Auth: profile fetch cooldown, skipping')
                     return
                 }
 
                 // Prevent redundant fetches if already loading
                 if (get().isFetchingProfile) {
-                    console.log('Auth: profile fetch already in progress, skipping')
                     return
                 }
 

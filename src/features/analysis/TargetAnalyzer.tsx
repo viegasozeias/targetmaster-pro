@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { useAnalysisStore } from "@/store/useAnalysisStore"
 import { useLanguageStore } from "@/store/useLanguageStore"
 import { translations } from "@/lib/translations"
+import { compressImage } from "@/lib/utils"
 
 export function TargetAnalyzer() {
     const { image, shots, setImage, addShot, removeShot, clearShots, reset, setAnalysisComplete } = useAnalysisStore()
@@ -14,14 +15,15 @@ export function TargetAnalyzer() {
     const fileInputRef = useRef<HTMLInputElement>(null)
     const imageRef = useRef<HTMLImageElement>(null)
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
         if (file) {
-            const reader = new FileReader()
-            reader.onload = (event) => {
-                setImage(event.target?.result as string)
+            try {
+                const compressed = await compressImage(file)
+                setImage(compressed)
+            } catch (error) {
+                console.error("Error compressing image:", error)
             }
-            reader.readAsDataURL(file)
         }
     }
 
@@ -39,15 +41,16 @@ export function TargetAnalyzer() {
         })
     }
 
-    const handleDrop = (e: React.DragEvent) => {
+    const handleDrop = async (e: React.DragEvent) => {
         e.preventDefault()
         const file = e.dataTransfer.files?.[0]
         if (file && file.type.startsWith("image/")) {
-            const reader = new FileReader()
-            reader.onload = (event) => {
-                setImage(event.target?.result as string)
+            try {
+                const compressed = await compressImage(file)
+                setImage(compressed)
+            } catch (error) {
+                console.error("Error compressing image:", error)
             }
-            reader.readAsDataURL(file)
         }
     }
 
@@ -107,24 +110,24 @@ export function TargetAnalyzer() {
     return (
         <div className="space-y-6 w-full max-w-4xl mx-auto">
             <Card>
-                <CardHeader className="flex flex-row items-center justify-between">
+                <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <div>
                         <CardTitle>{t.title}</CardTitle>
                         <CardDescription>{t.description}</CardDescription>
                     </div>
-                    <div className="flex gap-2">
-                        <Button variant="outline" size="sm" onClick={clearShots} disabled={shots.length === 0}>
+                    <div className="flex gap-2 w-full sm:w-auto">
+                        <Button variant="outline" size="sm" onClick={clearShots} disabled={shots.length === 0} className="flex-1 sm:flex-none">
                             <Trash2 className="h-4 w-4 mr-2" />
                             {t.clearShots}
                         </Button>
-                        <Button variant="destructive" size="sm" onClick={reset}>
+                        <Button variant="destructive" size="sm" onClick={reset} className="flex-1 sm:flex-none">
                             <X className="h-4 w-4 mr-2" />
                             {t.resetImage}
                         </Button>
                     </div>
                 </CardHeader>
                 <CardContent>
-                    <div className="relative w-full aspect-square max-h-[600px] bg-black/5 rounded-lg overflow-hidden mx-auto">
+                    <div className="relative w-full aspect-square max-h-[60vh] bg-black/5 rounded-lg overflow-hidden mx-auto">
                         <div
                             className="relative w-full h-full cursor-crosshair"
                             onClick={handleImageClick}

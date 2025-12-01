@@ -43,11 +43,9 @@ export async function detectShots(apiKey: string, imageBase64: string): Promise<
                 id: crypto.randomUUID(),
             }))
         } catch (parseError) {
-            console.error("JSON Parse Error:", parseError)
             throw new Error("Failed to parse Gemini response")
         }
     } catch (error) {
-        console.error("Error detecting shots:", error)
         throw error
     }
 }

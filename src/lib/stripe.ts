@@ -1,7 +1,8 @@
 import { loadStripe } from '@stripe/stripe-js';
 
 // Make sure to add VITE_STRIPE_PUBLISHABLE_KEY to your .env file
-const key = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY
+// @ts-ignore
+const key = window.env?.VITE_STRIPE_PUBLISHABLE_KEY || import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY
 const stripePromise = key ? loadStripe(key) : null;
 
 export const getStripe = () => {

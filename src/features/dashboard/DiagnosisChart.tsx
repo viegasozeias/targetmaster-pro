@@ -82,7 +82,7 @@ export function DiagnosisChart({ history }: DiagnosisChartProps) {
                     <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={data} layout="vertical" margin={{ top: 5, right: 30, left: 40, bottom: 5 }}>
                             <CartesianGrid strokeDasharray="3 3" horizontal={false} className="stroke-muted" />
-                            <XAxis type="number" hide />
+                            <XAxis type="number" allowDecimals={false} />
                             <YAxis
                                 dataKey="name"
                                 type="category"

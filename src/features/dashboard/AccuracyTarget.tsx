@@ -11,9 +11,7 @@ export function AccuracyTarget({ history }: AccuracyTargetProps) {
     const { language } = useLanguageStore()
 
     const shots = useMemo(() => {
-        // Flatten all shots from history
         return history.flatMap(record => {
-            // Check if diagnosis has shots data (new format)
             if (record.diagnosis && Array.isArray(record.diagnosis.shots)) {
                 return record.diagnosis.shots.map((shot: any) => ({
                     x: shot.x,
@@ -25,7 +23,22 @@ export function AccuracyTarget({ history }: AccuracyTargetProps) {
         })
     }, [history])
 
-    // If no shots data available yet, show placeholder
+    // Heatmap Logic
+    const heatmapData = useMemo(() => {
+        const gridSize = 20 // 20x20 grid
+        const grid = Array(gridSize).fill(0).map(() => Array(gridSize).fill(0))
+        let maxCount = 0
+
+        shots.forEach(shot => {
+            const col = Math.min(Math.floor((shot.x / 100) * gridSize), gridSize - 1)
+            const row = Math.min(Math.floor((shot.y / 100) * gridSize), gridSize - 1)
+            grid[row][col]++
+            maxCount = Math.max(maxCount, grid[row][col])
+        })
+
+        return { grid, maxCount, gridSize }
+    }, [shots])
+
     if (shots.length === 0) {
         return (
             <Card className="h-full">
@@ -44,7 +57,7 @@ export function AccuracyTarget({ history }: AccuracyTargetProps) {
     return (
         <Card className="h-full">
             <CardHeader>
-                <CardTitle>{language === 'pt' ? 'Precisão no Alvo' : 'Target Accuracy'}</CardTitle>
+                <CardTitle>{language === 'pt' ? 'Precisão no Alvo (Mapa de Calor)' : 'Target Accuracy (Heatmap)'}</CardTitle>
             </CardHeader>
             <CardContent>
                 <div className="h-[300px] w-full flex items-center justify-center">
@@ -60,16 +73,37 @@ export function AccuracyTarget({ history }: AccuracyTargetProps) {
                         <div className="absolute inset-0 m-auto w-full h-[1px] bg-neutral-300/50" />
                         <div className="absolute inset-0 m-auto h-full w-[1px] bg-neutral-300/50" />
 
-                        {/* Shots */}
+                        {/* Heatmap Layer */}
+                        <div className="absolute inset-0 grid" style={{ gridTemplateColumns: `repeat(${heatmapData.gridSize}, 1fr)`, gridTemplateRows: `repeat(${heatmapData.gridSize}, 1fr)` }}>
+                            {heatmapData.grid.map((row, rowIndex) =>
+                                row.map((count, colIndex) => {
+                                    if (count === 0) return <div key={`${rowIndex}-${colIndex}`} />
+
+                                    // Calculate intensity (0.2 to 0.8 opacity)
+                                    const intensity = 0.2 + (count / heatmapData.maxCount) * 0.6
+
+                                    return (
+                                        <div
+                                            key={`${rowIndex}-${colIndex}`}
+                                            className="bg-red-500 blur-md rounded-full transform scale-150"
+                                            style={{ opacity: intensity }}
+                                            title={`${count} shots`}
+                                        />
+                                    )
+                                })
+                            )}
+                        </div>
+
+                        {/* Individual Shots (Optional overlay for detail) */}
                         {shots.map((shot, i) => (
                             <div
                                 key={i}
-                                className="absolute w-2 h-2 bg-primary rounded-full shadow-sm transform -translate-x-1/2 -translate-y-1/2 opacity-60 hover:opacity-100 transition-opacity"
+                                className="absolute w-1.5 h-1.5 bg-black/30 rounded-full"
                                 style={{
                                     left: `${shot.x}%`,
                                     top: `${shot.y}%`,
+                                    transform: 'translate(-50%, -50%)'
                                 }}
-                                title={new Date(shot.date).toLocaleDateString()}
                             />
                         ))}
                     </div>

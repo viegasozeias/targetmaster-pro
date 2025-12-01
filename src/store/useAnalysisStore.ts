@@ -64,10 +64,16 @@ export const useAnalysisStore = create<AnalysisState>()(
                     // actually let's just not store the image for now or store a placeholder if we don't have storage bucket set up)
                     // For this MVP, we will skip image upload to avoid Storage bucket setup complexity for the user.
 
+                    // Include shots in the diagnosis data so we can visualize them later
+                    const diagnosisWithData = {
+                        ...diagnosis,
+                        shots: get().shots
+                    }
+
                     const { error } = await supabase.from('analyses').upsert({
                         id: currentAnalysisId,
                         user_id: user.id,
-                        diagnosis,
+                        diagnosis: diagnosisWithData,
                         grouping_size: groupingSize,
                         // image_url: publicUrl
                     })

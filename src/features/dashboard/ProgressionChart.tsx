@@ -7,6 +7,7 @@ import {
     CartesianGrid,
     Tooltip,
     ResponsiveContainer,
+    ReferenceLine,
 } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { format } from "date-fns"
@@ -110,6 +111,17 @@ export function ProgressionChart({ history }: ProgressionChartProps) {
                                 stroke="hsl(var(--primary))"
                                 strokeWidth={2}
                                 activeDot={{ r: 8 }}
+                            />
+                            <ReferenceLine
+                                y={15}
+                                stroke="hsl(var(--destructive))"
+                                strokeDasharray="3 3"
+                                label={{
+                                    value: t.goal || "Meta (15)",
+                                    position: 'insideBottomRight',
+                                    fill: 'hsl(var(--destructive))',
+                                    fontSize: 12
+                                }}
                             />
                         </LineChart>
                     </ResponsiveContainer>

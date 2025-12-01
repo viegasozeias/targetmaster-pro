@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
 import { ProgressionChart } from "./ProgressionChart"
 import { DiagnosisChart } from "./DiagnosisChart"
+import { AccuracyTarget } from "./AccuracyTarget"
 import { translations } from "@/lib/translations"
 
 import { HistoryDetailsDialog } from "@/features/history/HistoryDetailsDialog"
@@ -145,6 +146,12 @@ export function Dashboard() {
                 </div>
                 <div className="col-span-3">
                     <DiagnosisChart history={history} />
+                </div>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+                <div className="col-span-3">
+                    <AccuracyTarget history={history} />
                 </div>
             </div>
 

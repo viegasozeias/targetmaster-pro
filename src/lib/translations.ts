@@ -117,7 +117,6 @@ export const translations = {
             units: "unidades",
             progressionTitle: "Progressão do Agrupamento",
             lowerIsBetter: "Menor é melhor (Mais preciso)",
-            goal: "Meta",
             diagnosisTitle: "Diagnósticos Comuns",
             recentHistory: "Histórico Recente",
             noAnalyses: "Nenhuma análise registrada ainda. Comece a atirar!",
@@ -133,7 +132,8 @@ export const translations = {
                 anticipation: "Antecipação",
                 stance: "Postura",
                 other: "Outros"
-            }
+            },
+            goal: "Meta (15.0)",
         },
         drills: {
             title: "Treinos",
@@ -211,7 +211,6 @@ export const translations = {
             units: "units",
             progressionTitle: "Grouping Size Progression",
             lowerIsBetter: "Lower is better (More precise)",
-            goal: "Goal",
             diagnosisTitle: "Common Diagnoses",
             recentHistory: "Recent History",
             noAnalyses: "No analyses recorded yet. Start shooting!",
@@ -227,7 +226,8 @@ export const translations = {
                 anticipation: "Anticipation",
                 stance: "Stance",
                 other: "Other"
-            }
+            },
+            goal: "Goal (15.0)",
         },
         drills: {
             title: "Training Drills",

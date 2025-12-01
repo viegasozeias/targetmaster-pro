@@ -34,10 +34,17 @@ export const useDrillsStore = create<DrillsState>((set) => ({
     fetchDrills: async () => {
         set({ isLoading: true })
         try {
-            const { data, error } = await supabase
+            // Timeout promise
+            const timeout = new Promise((_, reject) =>
+                setTimeout(() => reject(new Error('Drills fetch timeout')), 10000)
+            )
+
+            const fetchPromise = supabase
                 .from('drills')
                 .select('*')
                 .order('title')
+
+            const { data, error } = await Promise.race([fetchPromise, timeout]) as any
 
             if (error) throw error
             set({ drills: data || [] })

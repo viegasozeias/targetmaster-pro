@@ -8,6 +8,9 @@ const getEnv = (key: string) => {
 const supabaseUrl = getEnv('VITE_SUPABASE_URL')
 const supabaseAnonKey = getEnv('VITE_SUPABASE_ANON_KEY')
 
+console.log('Debug: window.env', window.env)
+console.log('Debug: Resolved Supabase URL:', supabaseUrl)
+
 if (!supabaseUrl || !supabaseAnonKey) {
     console.warn('Missing Supabase environment variables. Authentication will not work.')
 } else {

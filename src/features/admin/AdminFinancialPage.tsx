@@ -17,15 +17,22 @@ export function AdminFinancialPage() {
     useEffect(() => {
         async function fetchFinancials() {
             try {
+                // Timeout promise
+                const timeout = new Promise((_, reject) =>
+                    setTimeout(() => reject(new Error('Request timed out')), 5000)
+                )
+
                 // Get all profiles to calculate stats
-                const { data: profiles, error } = await supabase
+                const fetchPromise = supabase
                     .from('profiles')
                     .select('subscription_tier, subscription_status')
 
+                const { data: profiles, error } = await Promise.race([fetchPromise, timeout]) as any
+
                 if (error) throw error
 
-                const proUsers = profiles?.filter(p => p.subscription_tier === 'pro') || []
-                const activePro = proUsers.filter(p => p.subscription_status === 'active' || !p.subscription_status) // Assuming null status is active for manual overrides
+                const proUsers = profiles?.filter((p: any) => p.subscription_tier === 'pro') || []
+                const activePro = proUsers.filter((p: any) => p.subscription_status === 'active' || !p.subscription_status) // Assuming null status is active for manual overrides
 
                 // Calculate MRR
                 const mrr = activePro.length * PRO_PRICE

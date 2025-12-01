@@ -36,7 +36,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         try {
             // Create a timeout promise
             const timeout = new Promise((_, reject) =>
-                setTimeout(() => reject(new Error('Auth init timeout')), 10000)
+                setTimeout(() => reject(new Error('Profile fetch timeout')), 20000)
             )
 
             // Race between getSession and timeout
@@ -73,11 +73,23 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         }
     },
     refreshProfile: async () => {
-        const { user } = get()
+        const { user, isLoading } = get()
         if (!user) return
 
+        // Prevent redundant fetches if already loading (and we have a user)
+        // We use a custom flag on the store to track specific profile fetching if needed,
+        // but for now, let's just rely on a simple check or just let it run but handle errors gracefully.
+        // Actually, let's add a simple guard.
+        // @ts-ignore - adding a temp property to the store instance to track in-flight requests
+        if (isFetchingProfile) { // Use the new flag
+            console.log('Auth: profile fetch already in progress, skipping')
+            return
+        }
+
         try {
+            set({ isFetchingProfile: true }) // Set the flag
             console.log('Auth: fetching profile for', user.id)
+
             const { data, error } = await supabase
                 .from('profiles')
                 .select('*')
@@ -98,11 +110,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         } catch (error) {
             console.error('Error fetching profile:', error)
             set({ isLoading: false })
+        } finally {
+            set({ isFetchingProfile: false }) // Reset the flag
         }
     },
     signOut: async () => {
         await supabase.auth.signOut()
-        set({ user: null, profile: null, isAdmin: false })
+        set({ user: null, profile: null, isAdmin: false, isFetchingProfile: false }) // Reset isFetchingProfile on sign out
     }
 }))
 

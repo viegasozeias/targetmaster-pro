@@ -16,12 +16,12 @@ export function AdminDashboard() {
     useEffect(() => {
         let mounted = true
         async function fetchStats() {
+            if (!mounted) return
+            console.log('AdminDashboard: fetching stats...')
             try {
-                console.log('AdminDashboard: fetching stats...')
-
-                // Create a timeout promise (5 seconds)
+                // Timeout promise - increased to 15s for cold starts
                 const timeoutPromise = new Promise((_, reject) =>
-                    setTimeout(() => reject(new Error('Request timed out')), 5000)
+                    setTimeout(() => reject(new Error('Request timed out')), 15000)
                 )
 
                 // Wrap Supabase calls in a promise that races with timeout

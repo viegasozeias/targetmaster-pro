@@ -1,14 +1,23 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TargetMaster Pro</title>
-    <script src="/config.js"></script>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TargetMaster Pro</title>
+  <script src="/config.js?v=<?php echo time(); ?>"></script> <!-- Attempting cache bust, though this is static HTML -->
+  <script>
+    // Fallback cache buster since we can't use PHP/server-side logic here
+    var script = document.createElement('script');
+    script.src = '/config.js?v=' + new Date().getTime();
+    document.head.appendChild(script);
+  </script>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+
 </html>

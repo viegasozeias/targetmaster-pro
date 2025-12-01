@@ -25,10 +25,17 @@ export function AdminUsersPage() {
 
     async function fetchUsers() {
         try {
-            const { data, error } = await supabase
+            // Timeout promise
+            const timeout = new Promise((_, reject) =>
+                setTimeout(() => reject(new Error('Users fetch timeout')), 5000)
+            )
+
+            const fetchPromise = supabase
                 .from('profiles')
                 .select('*')
                 .order('created_at', { ascending: false })
+
+            const { data, error } = await Promise.race([fetchPromise, timeout]) as any
 
             if (error) throw error
             setUsers(data as Profile[])

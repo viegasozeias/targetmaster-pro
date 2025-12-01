@@ -78,10 +78,17 @@ export const useAnalysisStore = create<AnalysisState>((set, get) => ({
     fetchHistory: async () => {
         set({ isLoadingHistory: true })
         try {
-            const { data, error } = await supabase
+            // Timeout promise
+            const timeout = new Promise((_, reject) =>
+                setTimeout(() => reject(new Error('History fetch timeout')), 10000)
+            )
+
+            const fetchPromise = supabase
                 .from('analyses')
                 .select('*')
                 .order('created_at', { ascending: false })
+
+            const { data, error } = await Promise.race([fetchPromise, timeout]) as any
 
             if (error) throw error
             set({ history: data || [] })

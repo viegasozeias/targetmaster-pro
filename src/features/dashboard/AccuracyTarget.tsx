@@ -42,11 +42,12 @@ export function AccuracyTarget({ history }: AccuracyTargetProps) {
     // Color scale function - More vivid/striking
     const getColor = (intensity: number) => {
         // Transparent -> Blue -> Green -> Yellow -> Red
+        // Increased base opacity for better visibility
         if (intensity < 0.1) return `rgba(0, 0, 255, 0)` // Transparent for very low
-        if (intensity < 0.3) return `rgba(0, 100, 255, ${0.4 + intensity})` // Vivid Blue
-        if (intensity < 0.5) return `rgba(0, 255, 100, ${0.5 + intensity})` // Vivid Green
-        if (intensity < 0.7) return `rgba(255, 200, 0, ${0.6 + intensity})` // Vivid Yellow
-        return `rgba(255, 0, 0, ${0.7 + intensity})` // Vivid Red
+        if (intensity < 0.3) return `rgba(0, 100, 255, ${0.6 + intensity})` // Vivid Blue (started at 0.4)
+        if (intensity < 0.5) return `rgba(0, 255, 100, ${0.7 + intensity})` // Vivid Green (started at 0.5)
+        if (intensity < 0.7) return `rgba(255, 200, 0, ${0.8 + intensity})` // Vivid Yellow (started at 0.6)
+        return `rgba(255, 0, 0, ${0.9 + intensity})` // Vivid Red (started at 0.7)
     }
 
     // Calculate General Tendency (MPI of all shots)

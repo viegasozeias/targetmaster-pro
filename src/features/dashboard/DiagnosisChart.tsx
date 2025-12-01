@@ -25,7 +25,7 @@ export function DiagnosisChart({ history }: DiagnosisChartProps) {
     const data = useMemo(() => {
         const counts: Record<string, number> = {}
 
-        // Keywords for categorization (simple heuristic)
+        // Keywords for categorization (ordered by priority)
         const categories: Record<string, string[]> = {
             "trigger": ["gatilho", "trigger", "jerking", "dedo", "anticipation jerk"],
             "grip": ["empunhadura", "grip", "tightening", "apertando", "mão", "firmeza"],
@@ -33,7 +33,8 @@ export function DiagnosisChart({ history }: DiagnosisChartProps) {
             "breathing": ["respiração", "breathing", "ar"],
             "anticipation": ["antecipação", "anticipating", "pushing", "heeling", "empurrando", "recuo"],
             "stance": ["postura", "stance", "corpo", "estabilidade"],
-            "center_hit": ["center", "centro", "preciso"],
+            "scattered": ["disperso", "espalhado", "scattered", "inconsistente", "agrupamento ruim"],
+            "center_hit": ["acerto no centro", "center hit", "excelente", "ótimo", "perfeito", "bullseye"],
         }
 
         history.forEach((item) => {
@@ -48,12 +49,17 @@ export function DiagnosisChart({ history }: DiagnosisChartProps) {
 
             let categoryKey = "other"
 
-            // Check for keywords
+            // Check for keywords in specific order
             for (const [key, keywords] of Object.entries(categories)) {
                 if (keywords.some(k => diagnosisText.includes(k))) {
                     categoryKey = key
                     break
                 }
+            }
+
+            // Special case: if it matched "center_hit" but also contains "disperso" or "espalhado", move to scattered
+            if (categoryKey === 'center_hit' && (diagnosisText.includes('disperso') || diagnosisText.includes('espalhado'))) {
+                categoryKey = 'scattered'
             }
 
             counts[categoryKey] = (counts[categoryKey] || 0) + 1

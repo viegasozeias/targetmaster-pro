@@ -23,7 +23,7 @@ import { Link } from "react-router-dom"
 import { supabase } from "@/lib/supabase"
 
 export function AnalysisReport() {
-    const { shots, image, reset, saveAnalysis } = useAnalysisStore()
+    const { shots, center, image, reset, saveAnalysis } = useAnalysisStore()
     const { data: diagnosisData } = useDiagnosisStore()
     const { language } = useLanguageStore()
     const { profile } = useAuthStore()
@@ -61,7 +61,7 @@ export function AnalysisReport() {
                     setAiReport(report)
 
                     // Auto-save to history
-                    const result = analyzeShots(shots, diagnosisData.handedness)
+                    const result = analyzeShots(shots, diagnosisData.handedness, center)
                     saveAnalysis(report, result.groupingSize)
 
                 } catch (err) {
@@ -72,7 +72,7 @@ export function AnalysisReport() {
                 }
             } else if (diagnosisData && shots.length > 0) {
                 // Save manual analysis as well
-                const result = analyzeShots(shots, diagnosisData.handedness)
+                const result = analyzeShots(shots, diagnosisData.handedness, center)
                 const manualDiagnosis = {
                     diagnosis: translations[language].report.results[result.diagnosisKey],
                     grouping: result.groupingSize > 30 ? "Scattered" : "Tight",
@@ -84,11 +84,11 @@ export function AnalysisReport() {
         }
 
         fetchAnalysis()
-    }, [systemApiKey, image, diagnosisData, shots, language, saveAnalysis, isPro])
+    }, [systemApiKey, image, diagnosisData, shots, center, language, saveAnalysis, isPro])
 
     if (!diagnosisData) return null
 
-    const result = analyzeShots(shots, diagnosisData.handedness)
+    const result = analyzeShots(shots, diagnosisData.handedness, center)
 
     return (
         <div className="space-y-6 w-full max-w-4xl mx-auto animate-in fade-in duration-500">
@@ -241,6 +241,15 @@ export function AnalysisReport() {
                                     alt="Target"
                                     className="w-full h-full object-contain"
                                 />
+                            )}
+                            {/* Center Point */}
+                            {center && (
+                                <div
+                                    className="absolute w-6 h-6 -ml-3 -mt-3 text-yellow-500 pointer-events-none"
+                                    style={{ left: `${center.x}%`, top: `${center.y}%` }}
+                                >
+                                    <Target className="w-full h-full drop-shadow-md" strokeWidth={3} />
+                                </div>
                             )}
                             {shots.map((shot) => (
                                 <div

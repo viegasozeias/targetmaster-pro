@@ -1,16 +1,19 @@
-import { useRef, type MouseEvent } from "react"
-import { Upload, X, Target, Trash2 } from "lucide-react"
+import { useRef, type MouseEvent, useState } from "react"
+import { Upload, X, Target, Trash2, Crosshair } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { useAnalysisStore } from "@/store/useAnalysisStore"
 import { useLanguageStore } from "@/store/useLanguageStore"
 import { translations } from "@/lib/translations"
 import { compressImage } from "@/lib/utils"
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 export function TargetAnalyzer() {
-    const { image, shots, setImage, addShot, removeShot, clearShots, reset, setAnalysisComplete } = useAnalysisStore()
+    const { image, shots, center, setImage, addShot, removeShot, clearShots, setCenter, reset, setAnalysisComplete } = useAnalysisStore()
     const { language } = useLanguageStore()
     const t = translations[language].analysis
+
+    const [mode, setMode] = useState<'center' | 'shots'>('center')
 
     const fileInputRef = useRef<HTMLInputElement>(null)
     const imageRef = useRef<HTMLImageElement>(null)
@@ -34,11 +37,16 @@ export function TargetAnalyzer() {
         const x = ((e.clientX - rect.left) / rect.width) * 100
         const y = ((e.clientY - rect.top) / rect.height) * 100
 
-        addShot({
-            x,
-            y,
-            id: crypto.randomUUID(),
-        })
+        if (mode === 'center') {
+            setCenter({ x, y })
+            setMode('shots') // Auto-switch to shots after setting center
+        } else {
+            addShot({
+                x,
+                y,
+                id: crypto.randomUUID(),
+            })
+        }
     }
 
     const handleDrop = async (e: React.DragEvent) => {
@@ -127,9 +135,25 @@ export function TargetAnalyzer() {
                     </div>
                 </CardHeader>
                 <CardContent>
+                    {/* Mode Toggle */}
+                    <div className="flex justify-center mb-4">
+                        <Tabs value={mode} onValueChange={(v) => setMode(v as 'center' | 'shots')} className="w-full max-w-md">
+                            <TabsList className="grid w-full grid-cols-2">
+                                <TabsTrigger value="center" className="flex items-center gap-2">
+                                    <Crosshair className="h-4 w-4" />
+                                    {t.modeCenter}
+                                </TabsTrigger>
+                                <TabsTrigger value="shots" className="flex items-center gap-2">
+                                    <Target className="h-4 w-4" />
+                                    {t.modeShots}
+                                </TabsTrigger>
+                            </TabsList>
+                        </Tabs>
+                    </div>
+
                     <div className="relative w-full aspect-square max-h-[60vh] bg-black/5 rounded-lg overflow-hidden mx-auto">
                         <div
-                            className="relative w-full h-full cursor-crosshair"
+                            className={`relative w-full h-full ${mode === 'center' ? 'cursor-crosshair' : 'cursor-pointer'}`}
                             onClick={handleImageClick}
                         >
                             <img
@@ -138,6 +162,18 @@ export function TargetAnalyzer() {
                                 alt="Target"
                                 className="w-full h-full object-contain pointer-events-none select-none"
                             />
+
+                            {/* Center Point */}
+                            {center && (
+                                <div
+                                    className="absolute w-6 h-6 -ml-3 -mt-3 text-yellow-500 pointer-events-none"
+                                    style={{ left: `${center.x}%`, top: `${center.y}%` }}
+                                >
+                                    <Crosshair className="w-full h-full drop-shadow-md" strokeWidth={3} />
+                                </div>
+                            )}
+
+                            {/* Shots */}
                             {shots.map((shot) => (
                                 <div
                                     key={shot.id}
@@ -155,8 +191,9 @@ export function TargetAnalyzer() {
                     </div>
 
                     <div className="mt-4 flex justify-between items-center">
-                        <div className="text-sm text-muted-foreground">
-                            {t.shotsMarked} <span className="font-medium text-foreground">{shots.length}</span>
+                        <div className="text-sm text-muted-foreground space-x-4">
+                            <span>{t.shotsMarked} <span className="font-medium text-foreground">{shots.length}</span></span>
+                            {center && <span className="text-green-600 font-medium flex items-center inline-flex gap-1"><Crosshair className="h-3 w-3" /> {t.centerSet}</span>}
                         </div>
                         <Button disabled={shots.length < 3} onClick={() => setAnalysisComplete(true)}>
                             {t.generateReport}

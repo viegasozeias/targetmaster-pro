@@ -19,6 +19,7 @@ export interface AnalysisRecord {
 interface AnalysisState {
     image: string | null
     shots: Shot[]
+    center: { x: number; y: number } | null
     isAnalysisComplete: boolean
     currentAnalysisId: string | null
     history: AnalysisRecord[]
@@ -27,6 +28,7 @@ interface AnalysisState {
     addShot: (shot: Shot) => void
     removeShot: (id: string) => void
     clearShots: () => void
+    setCenter: (center: { x: number; y: number } | null) => void
     setAnalysisComplete: (complete: boolean) => void
     reset: () => void
     saveAnalysis: (diagnosis: any, groupingSize: number) => Promise<void>
@@ -38,20 +40,22 @@ export const useAnalysisStore = create<AnalysisState>()(
         (set, get) => ({
             image: null,
             shots: [],
+            center: null,
             isAnalysisComplete: false,
             currentAnalysisId: null,
             history: [],
             isLoadingHistory: false,
-            setImage: (image) => set({ image, isAnalysisComplete: false, shots: [], currentAnalysisId: null }),
+            setImage: (image) => set({ image, isAnalysisComplete: false, shots: [], center: null, currentAnalysisId: null }),
             addShot: (shot) => set((state) => ({ shots: [...state.shots, shot] })),
             removeShot: (id) =>
                 set((state) => ({ shots: state.shots.filter((s) => s.id !== id) })),
             clearShots: () => set({ shots: [] }),
+            setCenter: (center) => set({ center }),
             setAnalysisComplete: (isAnalysisComplete) => set({
                 isAnalysisComplete,
                 currentAnalysisId: isAnalysisComplete ? crypto.randomUUID() : null
             }),
-            reset: () => set({ image: null, shots: [], isAnalysisComplete: false, currentAnalysisId: null }),
+            reset: () => set({ image: null, shots: [], center: null, isAnalysisComplete: false, currentAnalysisId: null }),
 
             saveAnalysis: async (diagnosis, groupingSize) => {
                 const { image, currentAnalysisId } = get()
@@ -64,10 +68,11 @@ export const useAnalysisStore = create<AnalysisState>()(
                     // actually let's just not store the image for now or store a placeholder if we don't have storage bucket set up)
                     // For this MVP, we will skip image upload to avoid Storage bucket setup complexity for the user.
 
-                    // Include shots in the diagnosis data so we can visualize them later
+                    // Include shots and center in the diagnosis data so we can visualize them later
                     const diagnosisWithData = {
                         ...diagnosis,
-                        shots: get().shots
+                        shots: get().shots,
+                        center: get().center
                     }
 
                     const { error } = await supabase.from('analyses').upsert({

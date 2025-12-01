@@ -8,7 +8,7 @@ export interface AnalysisResult {
     recommendationKey: keyof typeof translations.pt.report.results
 }
 
-export function analyzeShots(shots: Shot[], handedness: "right" | "left"): AnalysisResult {
+export function analyzeShots(shots: Shot[], handedness: "right" | "left", center?: { x: number; y: number } | null): AnalysisResult {
     if (shots.length === 0) {
         return {
             mpi: { x: 50, y: 50 },
@@ -40,8 +40,9 @@ export function analyzeShots(shots: Shot[], handedness: "right" | "left"): Analy
     }
 
     // Diagnosis Logic
-    const dx = mpi.x - 50
-    const dy = mpi.y - 50
+    const targetCenter = center || { x: 50, y: 50 }
+    const dx = mpi.x - targetCenter.x
+    const dy = mpi.y - targetCenter.y
 
     let diagnosisKey: keyof typeof translations.pt.report.results = "goodShooting"
     let recommendationKey: keyof typeof translations.pt.report.results = "goodShootingRec"

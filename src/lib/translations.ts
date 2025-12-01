@@ -173,6 +173,13 @@ export const translations = {
             roundCount: "Contagem de Disparos",
             add: "Adicionar",
             noAmmo: "Nenhuma munição no estoque.",
+        },
+        settings: {
+            title: "Configurações",
+            description: "Gerencie suas preferências e chaves de API.",
+            language: "Idioma",
+            save: "Salvar",
+            autoDetect: "Detectado Automaticamente (Fuso Horário/Navegador)",
         }
     },
     en: {
@@ -260,6 +267,13 @@ export const translations = {
             roundCount: "Round Count",
             add: "Add",
             noAmmo: "No ammo in inventory.",
+        },
+        settings: {
+            title: "Settings",
+            description: "Manage your preferences and API keys.",
+            language: "Language",
+            save: "Save",
+            autoDetect: "Auto-detected (Timezone/Browser)",
         },
         diagnosis: {
             title: "Shooter Diagnosis Profile",

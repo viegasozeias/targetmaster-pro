@@ -20,8 +20,11 @@ import {
 
 import { useLanguageStore } from "@/store/useLanguageStore"
 
+import { translations } from "@/lib/translations"
+
 export function SettingsDialog() {
     const { language, setLanguage } = useLanguageStore()
+    const t = translations[language]
     const [open, setOpen] = useState(false)
 
     const handleSave = () => {
@@ -37,17 +40,15 @@ export function SettingsDialog() {
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle>{language === 'pt' ? 'Configurações' : 'Settings'}</DialogTitle>
+                    <DialogTitle>{t.settings.title}</DialogTitle>
                     <DialogDescription>
-                        {language === 'pt'
-                            ? 'Insira sua chave da API do Google Gemini para habilitar recursos de IA.'
-                            : 'Enter your Google Gemini API Key to enable AI features.'}
+                        {t.settings.description}
                     </DialogDescription>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                     <div className="grid grid-cols-4 items-center gap-4">
                         <Label htmlFor="language" className="text-right">
-                            {language === 'pt' ? 'Idioma' : 'Language'}
+                            {t.settings.language}
                         </Label>
                         <Select
                             value={language}
@@ -66,7 +67,7 @@ export function SettingsDialog() {
                 </div>
                 <div className="flex justify-end">
                     <Button onClick={handleSave}>
-                        {language === 'pt' ? 'Salvar' : 'Save'}
+                        {t.settings.save}
                     </Button>
                 </div>
             </DialogContent>

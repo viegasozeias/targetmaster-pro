@@ -60,7 +60,46 @@ export function HistoryDetailsDialog({ isOpen, onClose, record }: HistoryDetails
                                 </CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <p>{diagnosisData.diagnosis || diagnosisData.title || diagnosisData.mainIssue || "N/A"}</p>
+                                <p>
+                                    {(() => {
+                                        const rawDiagnosis = diagnosisData.diagnosis || diagnosisData.title || diagnosisData.mainIssue || "N/A"
+
+                                        // Try to map to a category for the title/main diagnosis
+                                        const categories: Record<string, string[]> = {
+                                            "trigger": ["gatilho", "trigger", "jerking", "dedo"],
+                                            "grip": ["empunhadura", "grip", "tightening", "apertando", "mão"],
+                                            "sight": ["visada", "sight", "foco", "olho", "eye", "mira"],
+                                            "breathing": ["respiração", "breathing", "ar"],
+                                            "anticipation": ["antecipação", "anticipating", "pushing", "heeling", "empurrando"],
+                                            "stance": ["postura", "stance", "corpo"],
+                                        }
+
+                                        let categoryKey = ""
+                                        const lowerDiagnosis = rawDiagnosis.toLowerCase()
+
+                                        for (const [key, keywords] of Object.entries(categories)) {
+                                            if (keywords.some(k => lowerDiagnosis.includes(k))) {
+                                                categoryKey = key
+                                                break
+                                            }
+                                        }
+
+                                        if (categoryKey) {
+                                            // @ts-ignore
+                                            const translatedTitle = tDash.categories?.[categoryKey]
+                                            if (translatedTitle) {
+                                                return (
+                                                    <span>
+                                                        <span className="font-bold block mb-2">{translatedTitle}</span>
+                                                        {rawDiagnosis}
+                                                    </span>
+                                                )
+                                            }
+                                        }
+
+                                        return rawDiagnosis
+                                    })()}
+                                </p>
                             </CardContent>
                         </Card>
 
@@ -107,7 +146,7 @@ export function HistoryDetailsDialog({ isOpen, onClose, record }: HistoryDetails
                                 <CardHeader className="pb-2">
                                     <CardTitle className="text-lg flex items-center gap-2">
                                         <AlertTriangle className="h-5 w-5 text-orange-500" />
-                                        {language === 'pt' ? 'Equipamento & Saúde' : 'Equipment & Health'}
+                                        {t.equipment}
                                     </CardTitle>
                                 </CardHeader>
                                 <CardContent>

@@ -87,6 +87,7 @@ export const translations = {
             firearm: "Arma",
             experience: "Experiência",
             visionIssues: "Problemas de Visão",
+            equipment: "Equipamento & Saúde",
             results: {
                 noShots: "Nenhum disparo registrado",
                 noShotsRec: "Por favor marque os disparos no alvo.",
@@ -329,6 +330,7 @@ export const translations = {
             firearm: "Firearm",
             experience: "Experience",
             visionIssues: "Vision Issues",
+            equipment: "Equipment & Health",
             results: {
                 noShots: "No shots recorded",
                 noShotsRec: "Please mark shots on the target.",

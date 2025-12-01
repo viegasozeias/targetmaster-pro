@@ -2,7 +2,6 @@ import { useMemo } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useLanguageStore } from "@/store/useLanguageStore"
 import type { AnalysisRecord } from "@/store/useAnalysisStore"
-import { translations } from "@/lib/translations"
 
 interface AccuracyTargetProps {
     history: AnalysisRecord[]

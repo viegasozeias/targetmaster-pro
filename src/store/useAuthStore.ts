@@ -1,5 +1,6 @@
 
 import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 import type { User } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
 
@@ -127,5 +128,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         await supabase.auth.signOut()
         set({ user: null, profile: null, isAdmin: false, isFetchingProfile: false, lastFetchTime: 0 })
     }
+}), {
+    name: 'auth-storage',
+    partialize: (state) => ({
+        profile: state.profile,
+        isAdmin: state.isAdmin,
+        lastFetchTime: state.lastFetchTime
+    }),
 }))
 

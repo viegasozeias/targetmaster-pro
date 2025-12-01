@@ -25,7 +25,7 @@ export function AccuracyTarget({ history }: AccuracyTargetProps) {
 
     // Heatmap Logic
     const heatmapData = useMemo(() => {
-        const gridSize = 20 // 20x20 grid
+        const gridSize = 30 // Increased resolution
         const grid = Array(gridSize).fill(0).map(() => Array(gridSize).fill(0))
         let maxCount = 0
 
@@ -38,6 +38,15 @@ export function AccuracyTarget({ history }: AccuracyTargetProps) {
 
         return { grid, maxCount, gridSize }
     }, [shots])
+
+    // Color scale function
+    const getColor = (intensity: number) => {
+        // Blue (low) -> Green -> Yellow -> Red (high)
+        if (intensity < 0.25) return `rgba(0, 0, 255, ${0.3 + intensity})` // Blueish
+        if (intensity < 0.5) return `rgba(0, 255, 0, ${0.3 + intensity})` // Greenish
+        if (intensity < 0.75) return `rgba(255, 255, 0, ${0.4 + intensity})` // Yellowish
+        return `rgba(255, 0, 0, ${0.5 + intensity})` // Reddish
+    }
 
     if (shots.length === 0) {
         return (
@@ -79,14 +88,14 @@ export function AccuracyTarget({ history }: AccuracyTargetProps) {
                                 row.map((count, colIndex) => {
                                     if (count === 0) return <div key={`${rowIndex}-${colIndex}`} />
 
-                                    // Calculate intensity (0.2 to 0.8 opacity)
-                                    const intensity = 0.2 + (count / heatmapData.maxCount) * 0.6
+                                    const intensity = count / heatmapData.maxCount
+                                    const color = getColor(intensity)
 
                                     return (
                                         <div
                                             key={`${rowIndex}-${colIndex}`}
-                                            className="bg-red-500 blur-md rounded-full transform scale-150"
-                                            style={{ opacity: intensity }}
+                                            className="blur-md rounded-full transform scale-150"
+                                            style={{ backgroundColor: color }}
                                             title={`${count} shots`}
                                         />
                                     )

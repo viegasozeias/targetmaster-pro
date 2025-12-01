@@ -27,12 +27,13 @@ export function DiagnosisChart({ history }: DiagnosisChartProps) {
 
         // Keywords for categorization (simple heuristic)
         const categories: Record<string, string[]> = {
-            "trigger": ["gatilho", "trigger", "jerking", "dedo"],
-            "grip": ["empunhadura", "grip", "tightening", "apertando", "mão"],
-            "sight": ["visada", "sight", "foco", "olho", "eye", "mira"],
+            "trigger": ["gatilho", "trigger", "jerking", "dedo", "anticipation jerk"],
+            "grip": ["empunhadura", "grip", "tightening", "apertando", "mão", "firmeza"],
+            "sight": ["visada", "sight", "foco", "olho", "eye", "mira", "alinhamento"],
             "breathing": ["respiração", "breathing", "ar"],
-            "anticipation": ["antecipação", "anticipating", "pushing", "heeling", "empurrando"],
-            "stance": ["postura", "stance", "corpo"],
+            "anticipation": ["antecipação", "anticipating", "pushing", "heeling", "empurrando", "recuo"],
+            "stance": ["postura", "stance", "corpo", "estabilidade"],
+            "good": ["bom", "good", "excelente", "ótimo", "center", "centro", "preciso"],
         }
 
         history.forEach((item) => {
@@ -64,7 +65,6 @@ export function DiagnosisChart({ history }: DiagnosisChartProps) {
                 name: t.categories[key] || t.categories.other,
                 value
             }))
-            .filter(item => item.name !== t.categories.other)
             .sort((a, b) => b.value - a.value)
     }, [history, t.categories])
 

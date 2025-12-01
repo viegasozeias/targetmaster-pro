@@ -135,7 +135,8 @@ export const translations = {
                 breathing: "Respiração",
                 anticipation: "Antecipação",
                 stance: "Postura",
-                other: "Outros"
+                other: "Outros",
+                good: "Bom Disparo",
             },
             goal: "Meta (15.0)",
         },
@@ -229,7 +230,8 @@ export const translations = {
                 breathing: "Breathing",
                 anticipation: "Anticipation",
                 stance: "Stance",
-                other: "Other"
+                other: "Other",
+                good: "Good Shot",
             },
             goal: "Goal (15.0)",
         },

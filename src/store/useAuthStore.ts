@@ -19,7 +19,8 @@ interface AuthState {
     isLoading: boolean
     isAdmin: boolean
     initialized: boolean
-    isFetchingProfile?: boolean // Add this optional property
+    isFetchingProfile?: boolean
+    lastFetchTime?: number // Add timestamp
     initialize: () => Promise<void>
     refreshProfile: () => Promise<void>
     signOut: () => Promise<void>
@@ -31,7 +32,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     isLoading: true,
     isAdmin: false,
     initialized: false,
-    isFetchingProfile: false, // Initialize it
+    isFetchingProfile: false,
+    lastFetchTime: 0, // Initialize
     initialize: async () => {
         if (get().initialized) return
         console.log('Auth: initializing...')
@@ -75,21 +77,25 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         }
     },
     refreshProfile: async () => {
-        const { user } = get() // Removed unused isLoading
+        const { user } = get()
         if (!user) return
 
-        // Prevent redundant fetches if already loading (and we have a user)
-        // We use a custom flag on the store to track specific profile fetching if needed,
-        // but for now, let's just rely on a simple check or just let it run but handle errors gracefully.
-        // Actually, let's add a simple guard.
-        // @ts-ignore - adding a temp property to the store instance to track in-flight requests
-        if (get().isFetchingProfile) { // Use the new flag
+        // COOLDOWN CHECK: Don't fetch if we fetched successfully in the last 5 seconds
+        const now = Date.now()
+        const lastFetch = get().lastFetchTime || 0
+        if (now - lastFetch < 5000) {
+            console.log('Auth: profile fetch cooldown, skipping')
+            return
+        }
+
+        // Prevent redundant fetches if already loading
+        if (get().isFetchingProfile) {
             console.log('Auth: profile fetch already in progress, skipping')
             return
         }
 
         try {
-            set({ isFetchingProfile: true }) // Set the flag
+            set({ isFetchingProfile: true })
             console.log('Auth: fetching profile for', user.id)
 
             const { data, error } = await supabase
@@ -107,18 +113,19 @@ export const useAuthStore = create<AuthState>((set, get) => ({
             set({
                 profile: data as Profile,
                 isAdmin: data?.role === 'admin',
-                isLoading: false
+                isLoading: false,
+                lastFetchTime: Date.now() // Update timestamp on success
             })
         } catch (error) {
             console.error('Error fetching profile:', error)
             set({ isLoading: false })
         } finally {
-            set({ isFetchingProfile: false }) // Reset the flag
+            set({ isFetchingProfile: false })
         }
     },
     signOut: async () => {
         await supabase.auth.signOut()
-        set({ user: null, profile: null, isAdmin: false, isFetchingProfile: false }) // Reset isFetchingProfile on sign out
+        set({ user: null, profile: null, isAdmin: false, isFetchingProfile: false, lastFetchTime: 0 })
     }
 }))
 

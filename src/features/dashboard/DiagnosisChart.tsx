@@ -85,7 +85,7 @@ export function DiagnosisChart({ history }: DiagnosisChartProps) {
             </CardHeader>
             <CardContent>
                 <div className="h-[300px] w-full">
-                    <ResponsiveContainer width="100%" height="100%">
+                    <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                         <BarChart data={data} layout="vertical" margin={{ top: 5, right: 30, left: 40, bottom: 5 }}>
                             <CartesianGrid strokeDasharray="3 3" horizontal={false} className="stroke-muted" />
                             <XAxis type="number" allowDecimals={false} />
